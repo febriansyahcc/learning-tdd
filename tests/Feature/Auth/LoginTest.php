@@ -72,4 +72,27 @@ class LoginTest extends TestCase
 
         $response->assertStatus(422);
     }
+
+    public function test_user_cannot_login_with_unregistered_email(): void {
+        $response = $this->postJson('/api/auth/login' , [
+            'email' => 'unregistered@example.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(401);
+    }
+
+    public function test_user_cannot_login_with_wrong_password(): void {
+        User::factory()->create([
+            'email' => 'user@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $response = $this->postJson('/api/auth/login' , [
+            'email' => 'user@example.com',
+            'password' => 'wrongpassword',
+        ]);
+
+        $response->assertStatus(401);
+    }
 }
