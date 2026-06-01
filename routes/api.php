@@ -9,3 +9,10 @@ use Illuminate\Support\Facades\Route;
 // })->middleware('auth:sanctum');
 
 Route::post('/auth/register', [AuthController::class, 'register'] );
+Route::post('/auth/login', [AuthController::class, 'login'] );
+
+Route::middleware('auth:sanctum')->get('/protected-route', function(){
+    return response()->json([
+        'message' => 'You have accessed a protected route'
+    ], 200);
+});

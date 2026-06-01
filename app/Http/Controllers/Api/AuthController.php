@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -21,4 +22,23 @@ class AuthController extends Controller
             'message' => 'Successfully registered'
         ], 201);
     }
+
+    public function login(LoginRequest $loginRequest){
+        $user = User::where('email', $loginRequest->email)->first();
+
+        if(!$user || !Hash::check($loginRequest->password, $user->password)){
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Successfully logged in',
+            'access_token' => $token
+        ], 200);
+    }
+
+
 }
