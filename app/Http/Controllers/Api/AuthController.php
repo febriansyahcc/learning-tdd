@@ -21,4 +21,15 @@ class AuthController extends Controller
             'message' => 'Successfully registered'
         ], 201);
     }
+
+    public function login(Request $request){
+        $user = User::where('email', $request->email)->first();
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Successfully logged in',
+            'access_token' => $token
+        ], 200);
+    }
 }
