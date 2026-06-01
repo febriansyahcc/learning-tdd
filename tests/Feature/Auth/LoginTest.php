@@ -45,4 +45,31 @@ class LoginTest extends TestCase
 
         $protectedResponse->assertStatus(200);
     }
+
+    public function test_email_is_required(): void {
+        $response = $this->postJson('/api/auth/login' , [
+            'email' => '',
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+
+    public function test_password_is_required(): void {
+        $response = $this->postJson('/api/auth/login' , [
+            'email' => 'user@example.com',
+            'password' => '',
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+    public function test_email_must_be_valid(): void {
+        $response = $this->postJson('/api/auth/login' , [
+            'email' => 'userexample.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(422);
+    }
 }

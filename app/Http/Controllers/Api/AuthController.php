@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -22,8 +23,8 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(Request $request){
-        $user = User::where('email', $request->email)->first();
+    public function login(LoginRequest $loginRequest){
+        $user = User::where('email', $loginRequest->email)->first();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -32,4 +33,6 @@ class AuthController extends Controller
             'access_token' => $token
         ], 200);
     }
+
+
 }
